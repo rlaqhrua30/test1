@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>스케줄표 앱</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 700px;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px;
+      border: none;
+      background: #4a90e2;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #357abd;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background: #4a90e2;
+      color: white;
+    }
+
+    .delete-btn {
+      background: #ff4d4d;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .delete-btn:hover {
+      background: #d93636;
+    }
+
+    .empty {
+      text-align: center;
+      margin-top: 20px;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>📅 스케줄표 앱</h1>
+
+    <div class="input-group">
+      <input type="text" id="scheduleInput" placeholder="일정을 입력하세요" />
+
+      <input type="date" id="dateInput" />
+
+      <input type="time" id="timeInput" />
+
+      <button onclick="addSchedule()">일정 추가</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>날짜</th>
+          <th>시간</th>
+          <th>일정</th>
+          <th>삭제</th>
+        </tr>
+      </thead>
+
+      <tbody id="scheduleTable"></tbody>
+    </table>
+
+    <p class="empty" id="emptyMessage">
+      아직 일정이 없습니다.
+    </p>
+  </div>
+
+  <script>
+    let schedules = [];
+
+    function addSchedule() {
+      const scheduleInput = document.getElementById("scheduleInput");
+      const dateInput = document.getElementById("dateInput");
+      const timeInput = document.getElementById("timeInput");
+
+      const schedule = scheduleInput.value;
+      const date = dateInput.value;
+      const time = timeInput.value;
+
+      if (schedule === "" || date === "" || time === "") {
+        alert("모든 항목을 입력하세요!");
+        return;
+      }
+
+      schedules.push({
+        schedule,
+        date,
+        time
+      });
+
+      scheduleInput.value = "";
+      dateInput.value = "";
+      timeInput.value = "";
+
+      renderSchedules();
+    }
+
+    function deleteSchedule(index) {
+      schedules.splice(index, 1);
+      renderSchedules();
+    }
+
+    function renderSchedules() {
+      const table = document.getElementById("scheduleTable");
+      const emptyMessage = document.getElementById("emptyMessage");
+
+      table.innerHTML = "";
+
+      if (schedules.length === 0) {
+        emptyMessage.style.display = "block";
+      } else {
+        emptyMessage.style.display = "none";
+      }
+
+      schedules.forEach((item, index) => {
+        table.innerHTML += `
+          <tr>
+            <td>${item.date}</td>
+            <td>${item.time}</td>
+            <td>${item.schedule}</td>
+            <td>
+              <button class="delete-btn" onclick="deleteSchedule(${index})">
+                삭제
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+  </script>
+
+</body>
+</html>
